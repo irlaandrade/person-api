@@ -2,6 +2,10 @@ package com.digitalinnovation.personapi.utils;
 
 import com.digitalinnovation.personapi.dto.request.PersonDTO;
 import com.digitalinnovation.personapi.entity.Person;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -35,4 +39,16 @@ public class PersonUtils {
                 .build();
     }
 
+    public static String asJsonString(PersonDTO personDTO) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            objectMapper.registerModules(new JavaTimeModule());
+
+            return objectMapper.writeValueAsString(personDTO);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
